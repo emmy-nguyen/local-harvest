@@ -77,8 +77,8 @@ class App {
   }
 
   public start() {
-    this._app.listen(this._port, () => {
-      console.log(`App running at: http://localhost:${this._port}/ 🚀`);
+    this._app.listen(this._port, '0.0.0.0', () => {
+      console.log(`App running at: http://0.0.0.0:${this._port}/ 🚀`);
     });
   }
 }
