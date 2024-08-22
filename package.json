@@ -28,7 +28,6 @@
     "moment-timezone": "^0.5.45",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.13",
-    "prisma": "^5.14.0",
     "randomuuid": "^1.0.1"
   },
   "devDependencies": {
@@ -42,6 +41,7 @@
     "@types/nodemailer": "^6.4.15",
     "cpx2": "^7.0.1",
     "nodemon": "^3.1.0",
+    "prisma": "^5.18.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
