@@ -30,9 +30,9 @@ class HomeController implements IController {
   }
 
   private initializeRoutes() {
-    // this.router.get(`${this.path}`, this.showHomepage);
+    this.router.get(`${this.path}`, this.showHomepage);
 
-    this.router.get(`${this.path}`, ensureAuthenticated, this.showHomepage);
+    // this.router.get(`${this.path}`, ensureAuthenticated, this.showHomepage);
     this.router.post(`${this.path}`, ensureAuthenticated, this.showNearestMarket);
   }
 
@@ -41,10 +41,13 @@ class HomeController implements IController {
       const profileLink = getProfileLink(req, res);
 
       console.log('profileLink', profileLink);
+      if(!req.session.userId) {
+        console.log("No profile link, redirecting to /");
+        res.redirect("/")
       
-      if (!profileLink) {
-        console.log('No profile link, redirecting to /')
-        res.redirect("/");
+      // if (!profileLink) {
+      //   console.log('No profile link, redirecting to /')
+      //   res.redirect("/");
       } else {
         const allMarkets = await this._service.getAllMarkets();
         const shuffledMarkets = shuffle(allMarkets);
