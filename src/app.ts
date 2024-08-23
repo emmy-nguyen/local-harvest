@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import express from "express";
 import session from "express-session";
+import RedisStore from "connect-redis";
+import Redis from "ioredis";
 import path from "node:path";
 import fs from "fs";
 import Controller from "./interfaces/controller.interface";
@@ -49,8 +51,15 @@ class App {
   }
 
   private initializeSession() {
+    const redisClient = new Redis({
+      host: process.env.REDIS_HOST || 'localhost',
+      port: Number(process.env.REDIS_PORT) || 6379,
+      password: process.env.REDIS_PASSWORD || undefined,
+    });
+
     this._app.use(
       session({
+        store: new RedisStore({ client: redisClient}),
         secret: process.env.SESSION_SECRET || "default_secret_key",
         resave: false,
         saveUninitialized: true,
