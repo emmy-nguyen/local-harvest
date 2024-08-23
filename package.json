@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm ci --omit=dev && npx prisma generate --schema=./src/prisma/schema.prisma && tsc && npx cpx2 \"src/**/*.{ejs,css,prisma,sql}\" dist",
+    "build": "npm i --omit=dev && npx prisma generate --schema=./src/prisma/schema.prisma && tsc && npx cpx2 \"src/**/*.{ejs,css,prisma,sql}\" dist",
     "build:dev": "tsc && npx cpx2 \"src/**/*.{ejs,css,prisma,sql}\" dist",
     "start": "npm run start:server",
     "start:server": "node dist/server.js",
