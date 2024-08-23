@@ -122,10 +122,26 @@ export class CustomerAuthenticationController implements IController {
     const customer = await this._service.findUserByEmail(email);
     if (customer && password === customer.password) {
       req.session.userId = { vendorId: 0, customerId: customer.customerId };
-      console.log(req.session);
+
+      console.log('Session before save:', req.session);
+
+      await new Promise<void>((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save error:', err);
+            reject(err);
+          } else {
+            console.log('Session saved successfully');
+            resolve();
+          }
+        });
+      });
+
+      console.log('Session after save:', req.session);
       console.log(req.session.userId);
+      console.log('SessionID', req.sessionID);
+      console.log('Cookies:', req.headers.cookie)
       console.log('Attempting to redirect Home')
-      console.log('Session after login:', req.session) // Logging the session for debugging
       return res.redirect("/home");
     } else {
       req.session.messages = "Invalid credentials";
