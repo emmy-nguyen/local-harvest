@@ -54,10 +54,11 @@ class App {
     const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
     const redisClient = new Redis(redisUrl);
 
-    
+    console.log('Attempting to connect to Redis with URL:', !!process.env.REDIS_URL);
 
     redisClient.on('error', (error) => {
-      console.error('Redis error:', error)
+      console.error('Redis error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
     });
 
     redisClient.ping((err, result) => {
