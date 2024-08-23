@@ -53,9 +53,13 @@ class App {
   private initializeSession() {
     const redisClient = new Redis({
       host: process.env.REDISHOST,
-      port: Number(process.env.REDISPORT) || 6379,
+      port: Number(process.env.REDISPORT),
       password: process.env.REDISPASSWORD,
     });
+
+    redisClient.on('error', (error) => {
+      console.error('Redis error:', error)
+    })
 
     this._app.use(
       session({
