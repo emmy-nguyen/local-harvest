@@ -56,7 +56,9 @@ export class VendorAuthenticationController implements IController {
     if (vendor && password === vendor.password) {
       req.session.userId = { vendorId: vendor.vendorId, customerId: 0 };
       console.log(req.session); // Logging the session for debugging
+      console.log('Session saved, attempting redirect');
       return res.redirect("/home");
+  
     } else {
       req.session.messages = "Invalid credentials";
       res.redirect("/auth/vendor/login");
