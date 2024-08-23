@@ -16,18 +16,18 @@ class App {
     dotenv.config();
     this._app = express();
     this.configureApp();
-    this.initializePageNotFound();
     this.initializeControllers(controllers);
+    this.initializePageNotFound();
   }
 
   private configureApp() {
     this._app.set("view engine", "ejs");
-    this.setViewsFromAreas();
+    this.setViewsFromAreas(); 
     this.initializeStaticFiles();
     this.initializeUrlendcoded();
     this.initializeJson();
     this.initializeSession();
-    this.initializeSessionLogging();
+    // this.initializeSessionLogging();
   }
 
   private setViewsFromAreas() {
@@ -50,9 +50,6 @@ class App {
   private initializeUrlendcoded() {
     this._app.use(express.urlencoded({ extended: true }));
   }
-  private initializeJson() {
-    this._app.use(express.json());
-  }
 
   private initializeSession() {
     const redisUrl = process.env.REDIS_PUBLIC_URL || "";
@@ -60,13 +57,15 @@ class App {
       console.log('Redis URL is not set');
       throw new Error('REDIS_URL is not set')
     }
-    const redisClient = new Redis(redisUrl, {
-      retryStrategy: (times) => {
-        const delay = Math.min(times * 50, 2000);
-        console.log(`Retrying Redis connection in ${delay}ms...`);
-        return delay;
-      }
-    });
+    const redisClient = new Redis(redisUrl);
+
+    // const redisClient = new Redis(redisUrl, {
+    //   retryStrategy: (times) => {
+    //     const delay = Math.min(times * 50, 2000);
+    //     console.log(`Retrying Redis connection in ${delay}ms...`);
+    //     return delay;
+    //   }
+    // });
 
     redisClient.on('error', (error) => {
       console.error('Redis error:', error);
@@ -85,45 +84,49 @@ class App {
       }
     });
 
-    const sessionMiddleware = session({
-      store: new RedisStore({ client: redisClient}),
-      secret: process.env.SESSION_SECRET || "default_secret_key",
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        maxAge: 24 * 60 * 60 * 1000,
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
-      },
-    })
+    // const sessionMiddleware = session({
+    //   store: new RedisStore({ client: redisClient}),
+    //   secret: process.env.SESSION_SECRET || "default_secret_key",
+    //   resave: false,
+    //   saveUninitialized: false,
+    //   cookie: {
+    //     maxAge: 24 * 60 * 60 * 1000,
+    //     secure: process.env.NODE_ENV === "production",
+    //     httpOnly: true,
+    //     sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
+    //   },
+    // })
 
-    this._app.use((req, res, next) => {
-      console.log('Session Middleware: Processing request');
-      sessionMiddleware(req, res, next);
-    });
-    // this._app.use(
-    //   session({
-    //     store: new RedisStore({ client: redisClient}),
-    //     secret: process.env.SESSION_SECRET || "default_secret_key",
-    //     resave: false,
-    //     saveUninitialized: false,
-    //     cookie: {
-    //       maxAge: 24 * 60 * 60 * 1000,
-    //       secure: process.env.NODE_ENV === "production",
-    //       httpOnly: true,
-    //       sameSite: 'lax'
-    //     },
-    //   })
-    // );
+    // this._app.use((req, res, next) => {
+    //   console.log('Session Middleware: Processing request');
+    //   sessionMiddleware(req, res, next);
+    // });
+    this._app.use(
+      session({
+        store: new RedisStore({ client: redisClient}),
+        secret: process.env.SESSION_SECRET || "default_secret_key",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          maxAge: 24 * 60 * 60 * 1000,
+          secure: process.env.NODE_ENV === "production",
+          httpOnly: true,
+          sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
+        },
+      })
+    );
   }
 
-  private initializeSessionLogging() {
-    this._app.use((req, res, next) => {
-      console.log('Current session:', req.session);
-      console.log('SessionID:', req.sessionID);
-      next();
-    })
+  // private initializeSessionLogging() {
+  //   this._app.use((req, res, next) => {
+  //     console.log('Current session:', req.session);
+  //     console.log('SessionID:', req.sessionID);
+  //     next();
+  //   })
+  // }
+
+  private initializeJson() {
+    this._app.use(express.json());
   }
 
   private initializeControllers(controllers: Controller[]) {
