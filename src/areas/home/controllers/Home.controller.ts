@@ -39,8 +39,8 @@ class HomeController implements IController {
       const profileLink = getProfileLink(req, res);
 
       console.log('profileLink', profileLink);
-      
-      if (!profileLink) {
+
+      if (!req.session.userId) {
         res.redirect("/");
       } else {
         const allMarkets = await this._service.getAllMarkets();
