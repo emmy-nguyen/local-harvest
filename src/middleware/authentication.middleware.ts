@@ -6,7 +6,7 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
 
   if (req.session && req.session.userId) {
     // Type assertion for session data
-    const sessionData = req.session as {
+    const sessionData = req.session as { 
       userId: { vendorId?: number; customerId?: number };
       userType?: string;
     };

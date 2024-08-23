@@ -16,17 +16,17 @@ class App {
     dotenv.config();
     this._app = express();
     this.configureApp();
-    this.initializeControllers(controllers);
     this.initializePageNotFound();
+    this.initializeControllers(controllers);
   }
 
   private configureApp() {
     this._app.set("view engine", "ejs");
     this.setViewsFromAreas();
     this.initializeStaticFiles();
-    this.initializeSession();
     this.initializeUrlendcoded();
     this.initializeJson();
+    this.initializeSession();
     this.initializeSessionLogging();
   }
 
@@ -50,6 +50,9 @@ class App {
   private initializeUrlendcoded() {
     this._app.use(express.urlencoded({ extended: true }));
   }
+  private initializeJson() {
+    this._app.use(express.json());
+  }
 
   private initializeSession() {
     const redisUrl = process.env.REDIS_PUBLIC_URL || "";
@@ -61,6 +64,7 @@ class App {
       retryStrategy: (times) => {
         const delay = Math.min(times * 50, 2000);
         console.log(`Retrying Redis connection in ${delay}ms...`);
+        return delay;
       }
     });
 
@@ -90,7 +94,7 @@ class App {
         maxAge: 24 * 60 * 60 * 1000,
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
-        sameSite: 'lax'
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax'
       },
     })
 
@@ -132,13 +136,14 @@ class App {
     });
   }
 
-  private initializeJson() {
-    this._app.use(express.json());
-  }
+
 
   public start() {
     this._app.listen(this._port, '0.0.0.0', () => {
       console.log(`App running at: http://0.0.0.0:${this._port}/ 🚀`);
+      console.log(`Environment: ${process.env.NODE_ENV}`);
+      console.log(`Redis URL: ${process.env.REDIS_PUBLIC_URL ? 'Set' : 'Not Set'}`);
+      console.log(`Session Secret: ${process.env.SESSION_SECRET ? 'Set' : 'Using default'}`);
     });
   }
 }

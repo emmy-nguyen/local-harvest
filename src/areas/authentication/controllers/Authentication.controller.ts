@@ -124,7 +124,8 @@ export class CustomerAuthenticationController implements IController {
       req.session.userId = { vendorId: 0, customerId: customer.customerId };
       console.log(req.session);
       console.log(req.session.userId);
-      console.log('Attempting to redirect Home') // Logging the session for debugging
+      console.log('Attempting to redirect Home')
+      console.log('Session after login:', req.session) // Logging the session for debugging
       return res.redirect("/home");
     } else {
       req.session.messages = "Invalid credentials";
