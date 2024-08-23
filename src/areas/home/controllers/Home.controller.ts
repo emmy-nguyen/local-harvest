@@ -37,6 +37,9 @@ class HomeController implements IController {
   private showHomepage = async (req: express.Request, res: express.Response) => {
     try {
       const profileLink = getProfileLink(req, res);
+
+      console.log('profileLink', profileLink);
+      
       if (!profileLink) {
         res.redirect("/");
       } else {
