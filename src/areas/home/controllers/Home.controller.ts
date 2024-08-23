@@ -31,6 +31,8 @@ class HomeController implements IController {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, ensureAuthenticated, this.showHomepage);
+
+    // this.router.get(`${this.path}`, ensureAuthenticated, this.showHomepage);
     this.router.post(`${this.path}`, ensureAuthenticated, this.showNearestMarket);
   }
 
