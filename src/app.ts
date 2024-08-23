@@ -51,10 +51,13 @@ class App {
   }
 
   private initializeSession() {
-    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
+    const redisUrl = process.env.REDIS_PUBLIC_URL || "";
+    if(!redisUrl) {
+      console.log('Redis URL is not set')
+    }
     const redisClient = new Redis(redisUrl);
 
-    console.log('Attempting to connect to Redis with URL:', !!process.env.REDIS_URL);
+    console.log('Attempting to connect to Redis with URL:', process.env.REDIS_PUBLIC_URL);
 
     redisClient.on('error', (error) => {
       console.error('Redis error:', error);
