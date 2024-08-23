@@ -52,9 +52,9 @@ class App {
 
   private initializeSession() {
     const redisClient = new Redis({
-      host: process.env.REDIS_HOST || 'localhost',
-      port: Number(process.env.REDIS_PORT) || 6379,
-      password: process.env.REDIS_PASSWORD || undefined,
+      host: process.env.REDISHOST,
+      port: Number(process.env.REDISPORT) || 6379,
+      password: process.env.REDISPASSWORD,
     });
 
     this._app.use(
