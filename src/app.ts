@@ -59,7 +59,16 @@ class App {
 
     redisClient.on('error', (error) => {
       console.error('Redis error:', error)
-    })
+    });
+
+    redisClient.ping((err, result) => {
+      if (err) {
+        console.error('Redis PING error:', err);
+      } else {
+        console.log('Redis PING response:', result);
+      }
+    });
+
 
     this._app.use(
       session({
