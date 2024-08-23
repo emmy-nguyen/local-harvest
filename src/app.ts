@@ -51,11 +51,10 @@ class App {
   }
 
   private initializeSession() {
-    const redisClient = new Redis({
-      host: process.env.REDISHOST,
-      port: Number(process.env.REDISPORT),
-      password: process.env.REDISPASSWORD,
-    });
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
+    const redisClient = new Redis(redisUrl);
+
+    
 
     redisClient.on('error', (error) => {
       console.error('Redis error:', error)
@@ -79,6 +78,7 @@ class App {
         cookie: {
           maxAge: 24 * 60 * 60 * 1000,
           secure: process.env.NODE_ENV === "production",
+          httpOnly: true
         },
       })
     );
