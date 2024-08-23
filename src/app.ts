@@ -57,8 +57,6 @@ class App {
     }
     const redisClient = new Redis(redisUrl);
 
-    console.log('Attempting to connect to Redis with URL:', process.env.REDIS_PUBLIC_URL);
-
     redisClient.on('error', (error) => {
       console.error('Redis error:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
@@ -78,11 +76,12 @@ class App {
         store: new RedisStore({ client: redisClient}),
         secret: process.env.SESSION_SECRET || "default_secret_key",
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         cookie: {
           maxAge: 24 * 60 * 60 * 1000,
           secure: process.env.NODE_ENV === "production",
-          httpOnly: true
+          httpOnly: true,
+          sameSite: 'lax'
         },
       })
     );
